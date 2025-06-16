@@ -1,0 +1,108 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package DAO;
+
+/**
+ *
+ * @author Alvaro Jesus Cahuapaza
+ */
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import modelo.Conexion;
+import modelo.Venta;
+
+public class VentaDAO {
+    
+    Connection con;
+    PreparedStatement ps;
+    ResultSet rs;
+    
+    Conexion cn = new Conexion();
+
+    // Listar todas las ventas
+    public List<Venta> listar() {
+        List<Venta> lista = new ArrayList<>();
+        String sql = "SELECT * FROM Venta";
+
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Venta v = new Venta();
+                v.setId_venta(rs.getInt("id_venta"));
+                v.setFechaVenta(rs.getDate("fechaVenta"));
+                v.setMetodoPago(rs.getString("metodoPago"));
+                v.setId_empleado(rs.getInt("id_empleado"));
+                v.setId_cliente(rs.getInt("id_cliente"));
+                lista.add(v);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar ventas: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    // Agregar venta
+    public boolean agregar(Venta v) {
+        String sql = "INSERT INTO Venta (fechaVenta, metodoPago, id_empleado, id_cliente) VALUES (?, ?, ?, ?)";
+
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setDate(1, v.getFechaVenta());
+            ps.setString(2, v.getMetodoPago());
+            ps.setInt(3, v.getId_empleado());
+            ps.setInt(4, v.getId_cliente());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Error al agregar venta: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    // Actualizar venta
+    public boolean actualizar(Venta v) {
+        String sql = "UPDATE Venta SET fechaVenta=?, metodoPago=?, id_empleado=?, id_cliente=? WHERE id_venta=?";
+
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setDate(1, v.getFechaVenta());
+            ps.setString(2, v.getMetodoPago());
+            ps.setInt(3, v.getId_empleado());
+            ps.setInt(4, v.getId_cliente());
+            ps.setInt(5, v.getId_venta());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar venta: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    // Eliminar venta
+    public boolean eliminar(int id) {
+        String sql = "DELETE FROM Venta WHERE id_venta=?";
+
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar venta: " + e.getMessage());
+        }
+
+        return false;
+    }
+}
+

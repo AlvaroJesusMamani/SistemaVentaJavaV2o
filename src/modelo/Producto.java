@@ -10,44 +10,80 @@ package modelo;
  */
 
 
-import java.sql.Date;
-
 public class Producto {
     private int id_producto;
     private String descripcion;
     private double precio;
     private String categoria;
-    private Date fechaVencimiento;
+    private String fechaVencimiento;
     private int id_proveedor;
+    private int stock;
+    private String codigo;
 
-    public Producto() {}
+    // Getters y Setters
+    public int getId_producto() {
+        return id_producto;
+    }
 
-    public Producto(int id_producto, String descripcion, double precio, String categoria,
-                    Date fechaVencimiento, int id_proveedor) {
+    public void setId_producto(int id_producto) {
         this.id_producto = id_producto;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
         this.precio = precio;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
         this.categoria = categoria;
+    }
+
+    public String getFechaVencimiento() {
+        return fechaVencimiento;
+    }
+
+    public void setFechaVencimiento(String fechaVencimiento) {
         this.fechaVencimiento = fechaVencimiento;
+    }
+
+    public int getId_proveedor() {
+        return id_proveedor;
+    }
+
+    public void setId_proveedor(int id_proveedor) {
         this.id_proveedor = id_proveedor;
     }
 
-    public int getId_producto() { return id_producto; }
-    public void setId_producto(int id_producto) { this.id_producto = id_producto; }
+    public int getStock() {
+        return stock;
+    }
 
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
 
-    public double getPrecio() { return precio; }
-    public void setPrecio(double precio) { this.precio = precio; }
+    public String getCodigo() {
+        return codigo;
+    }
 
-    public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
-
-    public Date getFechaVencimiento() { return fechaVencimiento; }
-    public void setFechaVencimiento(Date fechaVencimiento) { this.fechaVencimiento = fechaVencimiento; }
-
-    public int getId_proveedor() { return id_proveedor; }
-    public void setId_proveedor(int id_proveedor) { this.id_proveedor = id_proveedor; }
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+    
 }
 

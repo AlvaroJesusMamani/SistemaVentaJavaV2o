@@ -75,7 +75,7 @@ public class EmpleadoDAO {
         return false;
     }
 
-    // Actualizar empleado
+    // Actualiza empleado
     public boolean actualizar(Empleado e) {
         String sql = "UPDATE Empleado SET nombre=?, telefono=?, dni=?, email=?, direccion_calle=?, direccion_av=?, direccion_mz=?, ciudad=? WHERE id_empleado=?";
 

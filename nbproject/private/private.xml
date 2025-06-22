@@ -6,7 +6,8 @@
             <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/Vista/FrmSistemaVentas.java</file>
             <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/DAO/ProductoDAO.java</file>
             <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/modelo/Producto.java</file>
-            <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/DAO/EmpleadoDAO.java</file>
+            <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/DAO/ProveedorDAO.java</file>
+            <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/modelo/Proveedor.java</file>
         </group>
     </open-files>
 </project-private>

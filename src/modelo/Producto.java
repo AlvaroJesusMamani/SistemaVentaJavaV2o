@@ -4,6 +4,8 @@
  */
 package modelo;
 
+import java.util.Date;
+
 /**
  *
  * @author Alvaro Jesus Cahuapaza
@@ -15,12 +17,13 @@ public class Producto {
     private String descripcion;
     private double precio;
     private String categoria;
-    private String fechaVencimiento;
+    private Date fechaVencimiento;
     private int id_proveedor;
     private int stock;
     private String codigo;
 
     // Getters y Setters
+
     public int getId_producto() {
         return id_producto;
     }
@@ -53,11 +56,11 @@ public class Producto {
         this.categoria = categoria;
     }
 
-    public String getFechaVencimiento() {
+    public Date getFechaVencimiento() {
         return fechaVencimiento;
     }
 
-    public void setFechaVencimiento(String fechaVencimiento) {
+    public void setFechaVencimiento(Date fechaVencimiento) {
         this.fechaVencimiento = fechaVencimiento;
     }
 
@@ -84,6 +87,7 @@ public class Producto {
     public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
+    
     
 }
 

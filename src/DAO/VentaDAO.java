@@ -12,6 +12,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.Conexion;
+import modelo.DetalleVenta;
 import modelo.Venta;
 
 public class VentaDAO {
@@ -21,7 +22,68 @@ public class VentaDAO {
     ResultSet rs;
     
     Conexion cn = new Conexion();
+// ✅ Registrar venta y obtener el ID generado (usado al generar la venta)
+public int registrarVenta(Venta v) {
+    String sql = "INSERT INTO Venta (fechaVenta, metodoPago, id_empleado, id_cliente) VALUES (?, ?, ?, ?)";
+    int idGenerado = -1;
 
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        ps.setDate(1, v.getFechaVenta());
+        ps.setString(2, v.getMetodoPago());
+        ps.setInt(3, v.getId_empleado());
+        ps.setInt(4, v.getId_cliente());
+        ps.executeUpdate();
+
+        rs = ps.getGeneratedKeys();
+        if (rs.next()) {
+            idGenerado = rs.getInt(1);
+        }
+    } catch (SQLException e) {
+        System.err.println("Error al registrar venta: " + e.getMessage());
+    }
+    return idGenerado;
+}
+
+// ✅ Registrar detalle de venta
+public boolean registrarDetalleVenta(DetalleVenta d) {
+    String sql = "INSERT INTO DetalleVenta (id_venta, id_producto, cantidad, precioUnitario) VALUES (?, ?, ?, ?)";
+
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setInt(1, d.getId_venta());
+        ps.setInt(2, d.getId_producto());
+        ps.setInt(3, d.getCantidad());
+        ps.setDouble(4, d.getPrecioUnitario());
+        ps.executeUpdate();
+        return true;
+    } catch (SQLException e) {
+        System.err.println("Error al registrar detalle venta: " + e.getMessage());
+    }
+    return false;
+}
+
+// ✅ Buscar ID de producto por código
+public int buscarIdProductoPorCodigo(String codigo) {
+    String sql = "SELECT id_producto FROM Producto WHERE codigo = ?";
+    int id = -1;
+
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setString(1, codigo);
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            id = rs.getInt("id_producto");
+        }
+    } catch (SQLException e) {
+        System.err.println("Error al buscar id_producto por código: " + e.getMessage());
+    }
+
+    return id;
+}
     // Listar todas las ventas
     public List<Venta> listar() {
         List<Venta> lista = new ArrayList<>();
@@ -105,4 +167,5 @@ public class VentaDAO {
         return false;
     }
 }
+
 

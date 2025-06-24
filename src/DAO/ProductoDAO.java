@@ -19,7 +19,34 @@ public class ProductoDAO {
     ResultSet rs;
     Conexion cn = new Conexion();
 
-    // ✅ Obtener el primer proveedor registrado
+    
+    public Producto buscarPorCodigo(String codigo) {
+    Producto p = null;
+    String sql = "SELECT * FROM Producto WHERE codigo = ?";
+    
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setString(1, codigo);
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            p = new Producto();
+            p.setId_producto(rs.getInt("id_producto"));
+            p.setDescripcion(rs.getString("descripcion"));
+            p.setPrecio(rs.getDouble("precio"));
+            p.setCategoria(rs.getString("categoria"));
+            p.setFechaVencimiento(rs.getDate("fechaVencimiento"));
+            p.setId_proveedor(rs.getInt("id_proveedor"));
+            p.setStock(rs.getInt("stock"));
+            p.setCodigo(rs.getString("codigo"));
+        }
+    } catch (SQLException e) {
+        System.err.println("Error al buscar producto por código: " + e.getMessage());
+    }
+    return p;
+}
+    
+    // Obtener el primer proveedor registrado
     public int obtenerPrimerIdProveedor() {
         String sql = "SELECT TOP 1 id_proveedor FROM Proveedor ORDER BY id_proveedor ASC";
         try {
@@ -130,6 +157,7 @@ public class ProductoDAO {
         return false;
     }
 }
+
 
 
 

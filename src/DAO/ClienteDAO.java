@@ -22,6 +22,28 @@ public class ClienteDAO {
     
     Conexion cn = new Conexion();
 
+    public Cliente buscarPorCodigo(String codigo) {
+    String sql = "SELECT * FROM Cliente WHERE id_cliente = ?";
+    Cliente c = null;
+
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setInt(1, Integer.parseInt(codigo));
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            c = new Cliente();
+            c.setId_cliente(rs.getInt("id_cliente"));
+            c.setNombre(rs.getString("nombre"));
+            // Si necesitas más campos, agrégalos aquí
+        }
+    } catch (SQLException | NumberFormatException e) {
+        System.err.println("Error al buscar cliente por código: " + e.getMessage());
+    }
+
+    return c;
+}
+
     // Listar clientes
     public List<Cliente> listar() {
         List<Cliente> lista = new ArrayList<>();

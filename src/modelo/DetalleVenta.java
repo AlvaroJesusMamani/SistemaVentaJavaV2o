@@ -16,6 +16,15 @@ public class DetalleVenta {
     private int id_venta;
     private int id_producto;
     private int cantidad;
+    private Producto producto;
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
     private double precioUnitario;
     private double importe; // ← Este es calculado por SQL Server
 

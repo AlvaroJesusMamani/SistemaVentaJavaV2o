@@ -6,6 +6,12 @@
             <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/Vista/FrmSistemaVentas.java</file>
             <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/modelo/Producto.java</file>
             <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/modelo/Proveedor.java</file>
+            <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/DAO/ProductoDAO.java</file>
+            <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/DAO/ClienteDAO.java</file>
+            <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/DAO/VentaDAO.java</file>
+            <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/generaPDF/GenerarBoletaPDF.java</file>
+            <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/modelo/DetalleVenta.java</file>
+            <file>file:/C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/src/DAO/DetalleVentaDAO.java</file>
         </group>
     </open-files>
 </project-private>

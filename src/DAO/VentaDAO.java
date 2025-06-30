@@ -14,6 +14,7 @@ import java.util.List;
 import modelo.Conexion;
 import modelo.DetalleVenta;
 import modelo.Venta;
+import modelo.Producto;
 
 public class VentaDAO {
     
@@ -44,6 +45,7 @@ public int registrarVenta(Venta v) {
         System.err.println("Error al registrar venta: " + e.getMessage());
     }
     return idGenerado;
+    
 }
 
 // ✅ Registrar detalle de venta
@@ -166,6 +168,91 @@ public int buscarIdProductoPorCodigo(String codigo) {
 
         return false;
     }
+    
+    public Venta buscarPorId(int idVenta) {
+    Venta v = null;
+    String sql = "SELECT * FROM Venta WHERE id_venta=?";
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setInt(1, idVenta);
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            v = new Venta();
+            v.setId_venta(rs.getInt("id_venta"));
+            v.setFechaVenta(rs.getDate("fechaVenta"));
+            v.setMetodoPago(rs.getString("metodoPago"));
+            v.setId_empleado(rs.getInt("id_empleado"));
+            v.setId_cliente(rs.getInt("id_cliente"));
+        }
+    } catch (SQLException e) {
+        System.err.println("Error al buscar venta: " + e.getMessage());
+    }
+    return v;
+}
+    
+public List<DetalleVenta> obtenerDetallesVenta(int idVenta) {
+    List<DetalleVenta> lista = new ArrayList<>();
+    String sql = "SELECT * FROM DetalleVenta WHERE id_venta=?";
+
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setInt(1, idVenta);
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            DetalleVenta d = new DetalleVenta();
+            d.setId_detalle(rs.getInt("id_detalle"));
+            d.setId_venta(rs.getInt("id_venta"));
+            d.setId_producto(rs.getInt("id_producto"));
+            d.setCantidad(rs.getInt("cantidad"));
+            d.setPrecioUnitario(rs.getDouble("precioUnitario"));
+            d.setImporte(rs.getDouble("importe"));
+            lista.add(d);
+        }
+
+    } catch (SQLException e) {
+        System.err.println("Error al obtener detalles de venta: " + e.getMessage());
+    }
+
+    return lista;
+}
+public List<DetalleVenta> listarDetalleVenta(int idVenta) {
+    List<DetalleVenta> lista = new ArrayList<>();
+    String sql = "SELECT dv.*, p.descripcion FROM DetalleVenta dv JOIN Producto p ON dv.id_producto = p.id_producto WHERE dv.id_venta = ?";
+
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setInt(1, idVenta);
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            DetalleVenta d = new DetalleVenta();
+            d.setId_detalle(rs.getInt("id_detalle"));
+            d.setId_venta(rs.getInt("id_venta"));
+            d.setId_producto(rs.getInt("id_producto"));
+            d.setCantidad(rs.getInt("cantidad"));
+            d.setPrecioUnitario(rs.getDouble("precioUnitario"));
+            d.setImporte(rs.getDouble("importe"));
+
+            // Asociar producto con descripción (para el PDF)
+            Producto p = new Producto();
+            p.setId_producto(rs.getInt("id_producto"));
+            p.setDescripcion(rs.getString("descripcion"));
+            d.setProducto(p);
+
+            lista.add(d);
+        }
+    } catch (SQLException e) {
+        System.err.println("Error al listar detalle de venta: " + e.getMessage());
+    }
+
+    return lista;
+}
+
+
 }
 
 

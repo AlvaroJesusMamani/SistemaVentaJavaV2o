@@ -6,16 +6,20 @@ import DAO.EmpleadoDAO;
 import DAO.ProductoDAO;
 import DAO.ProveedorDAO;
 import DAO.VentaDAO;
+import generaPDF.GenerarBoletaPDF;
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Cliente;
-import modelo.DetalleVenta;
 import modelo.Empleado;
 import modelo.Producto;
 import modelo.Proveedor;
 import modelo.Venta;
+import modelo.DetalleVenta;
+
 
 /**
  *
@@ -197,6 +201,7 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
         btnCancelar2 = new javax.swing.JButton();
         jLabel49 = new javax.swing.JLabel();
         cbxMetodoPago = new javax.swing.JComboBox<>();
+        btnGenerarBoleta = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         btnSalir = new javax.swing.JButton();
 
@@ -796,13 +801,13 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
 
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Codigo Prod.", "Descripcion", "Precio", "Categoria", "Stock", "FechaVencimiento"
+                "Codigo Prod.", "Descripcion", "Precio", "Categoria", "Stock", "FechaVencimiento", "ID"
             }
         ));
         tblProductos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -974,6 +979,13 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
 
         cbxMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "METODO DE PAGO", "EFECTIVO", "TARJETA", "YAPE" }));
 
+        btnGenerarBoleta.setText("Boleta");
+        btnGenerarBoleta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarBoletaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -1032,6 +1044,8 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
                         .addGap(40, 40, 40))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnGenerarBoleta)
+                .addGap(78, 78, 78)
                 .addComponent(btnGenerarVenta)
                 .addGap(55, 55, 55)
                 .addComponent(btnCancelar2, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1078,7 +1092,8 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnCancelar2)
-                            .addComponent(btnGenerarVenta))
+                            .addComponent(btnGenerarVenta)
+                            .addComponent(btnGenerarBoleta))
                         .addContainerGap(24, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(82, 82, 82)
@@ -1554,8 +1569,12 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
         p.setStock(Integer.parseInt(txtStock.getText()));
         java.sql.Date fecha = new java.sql.Date(jdcFechaVencimiento.getDate().getTime());
         p.setFechaVencimiento(fecha);
+        
+ProductoDAO dao = new ProductoDAO();
+Producto actual = dao.buscarPorId(Integer.parseInt(txtIdProducto.getText()));
+p.setId_proveedor(actual.getId_proveedor());  // ⬅️ usamos el proveedor existente
 
-        ProductoDAO dao = new ProductoDAO();
+        
         if (dao.actualizar(p)) {
             JOptionPane.showMessageDialog(this, "Producto modificado correctamente.");
             listarProductos();
@@ -1593,21 +1612,26 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
 
     private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductosMouseClicked
          filaSeleccionadaProducto = tblProductos.getSelectedRow();
-    if (filaSeleccionadaProducto != -1) {
-        txtIdProducto.setText(tblProductos.getValueAt(filaSeleccionadaProducto, 0).toString());
-        txtCodigoProd.setText(tblProductos.getValueAt(filaSeleccionadaProducto, 0).toString());
-        txtDescripcion.setText(tblProductos.getValueAt(filaSeleccionadaProducto, 2).toString());
-        txtPrecio.setText(tblProductos.getValueAt(filaSeleccionadaProducto, 3).toString());
-        cboCategoria.setSelectedItem(tblProductos.getValueAt(filaSeleccionadaProducto, 4).toString());
-        txtStock.setText(tblProductos.getValueAt(filaSeleccionadaProducto, 5).toString());
+if (filaSeleccionadaProducto != -1) {
+    txtCodigoProd.setText(tblProductos.getValueAt(filaSeleccionadaProducto, 0).toString());
+    txtDescripcion.setText(tblProductos.getValueAt(filaSeleccionadaProducto, 1).toString());
+    txtPrecio.setText(tblProductos.getValueAt(filaSeleccionadaProducto, 2).toString());
+    cboCategoria.setSelectedItem(tblProductos.getValueAt(filaSeleccionadaProducto, 3).toString());
+    txtStock.setText(tblProductos.getValueAt(filaSeleccionadaProducto, 4).toString());
 
-        try {
-            java.util.Date fecha = new SimpleDateFormat("yyyy-MM-dd").parse(tblProductos.getValueAt(filaSeleccionadaProducto, 6).toString());
-            jdcFechaVencimiento.setDate(fecha);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    // ✅ Establecer fecha en el jdcFechaVencimiento
+    try {
+        String fechaStr = tblProductos.getValueAt(filaSeleccionadaProducto, 5).toString();
+        java.util.Date fecha = new SimpleDateFormat("yyyy-MM-dd").parse(fechaStr);
+        jdcFechaVencimiento.setDate(fecha);
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    // ✅ Obtener id_producto desde la columna oculta
+    txtIdProducto.setText(tblProductos.getValueAt(filaSeleccionadaProducto, 6).toString());
+}
+
     }//GEN-LAST:event_tblProductosMouseClicked
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
@@ -1676,39 +1700,95 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
 
         calcularTotalVenta(); // Llamada al método para recalcular el total
     }//GEN-LAST:event_btnAgregar5ActionPerformed
-
+//------------GENERA LA VENTA-----------
     private void btnGenerarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarVentaActionPerformed
-        Venta v = new Venta();
-        VentaDAO vdao = new VentaDAO();
+            Venta v = new Venta();
+    VentaDAO vdao = new VentaDAO();
+    ProductoDAO pdao = new ProductoDAO();
 
-        v.setId_cliente(Integer.parseInt(txtCodCliente.getText()));
-        v.setMetodoPago(cbxMetodoPago.getSelectedItem().toString());
-        v.setFechaVenta(new java.sql.Date(System.currentTimeMillis()));
-        v.setId_empleado(1); // o el que esté logueado
+    v.setId_cliente(Integer.parseInt(txtCodCliente.getText()));
+    v.setMetodoPago(cbxMetodoPago.getSelectedItem().toString());
+    v.setFechaVenta(new java.sql.Date(System.currentTimeMillis()));
+    v.setId_empleado(1); // empleado fijo o actual si lo tienes
 
-        int idVenta = vdao.registrarVenta(v);
+    int idVenta = vdao.registrarVenta(v);
+    
 
-        // Registrar detalle
+    if (idVenta != -1) {
+        txtIdVenta.setText(String.valueOf(idVenta));
+
+        List<DetalleVenta> listaDetalleVenta = new ArrayList<>();
+
         for (int i = 0; i < tblDetalleVenta.getRowCount(); i++) {
             DetalleVenta d = new DetalleVenta();
             d.setId_venta(idVenta);
-            d.setId_producto(vdao.buscarIdProductoPorCodigo(tblDetalleVenta.getValueAt(i, 1).toString()));
+
+            String codigo = tblDetalleVenta.getValueAt(i, 1).toString();
+            int idProd = vdao.buscarIdProductoPorCodigo(codigo);
+            d.setId_producto(idProd);
             d.setCantidad(Integer.parseInt(tblDetalleVenta.getValueAt(i, 4).toString()));
             d.setPrecioUnitario(Double.parseDouble(tblDetalleVenta.getValueAt(i, 5).toString()));
+            d.setImporte(Double.parseDouble(tblDetalleVenta.getValueAt(i, 6).toString()));
+
+            // Asociar el producto para el PDF
+            Producto producto = pdao.buscarPorCodigo(codigo);
+            d.setProducto(producto);
+
             vdao.registrarDetalleVenta(d);
+            listaDetalleVenta.add(d);
+        }
+
+        // Generar PDF
+        try {
+            String ruta = "C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/Boletas/Boleta_" + idVenta + ".pdf";
+            new File("C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/Boletas").mkdirs();
+
+            Venta ventaCompleta = vdao.buscarPorId(idVenta); // asegúrate de tener este método
+            GenerarBoletaPDF.generarBoleta(ventaCompleta, listaDetalleVenta, ruta);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al generar boleta PDF: " + e.getMessage());
         }
 
         JOptionPane.showMessageDialog(null, "Venta registrada con éxito");
         limpiarFormularioVenta();
+    } else {
+        JOptionPane.showMessageDialog(null, "Error al registrar venta");
+    }
     
     }//GEN-LAST:event_btnGenerarVentaActionPerformed
-
+//
     private void btnCancelar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelar2ActionPerformed
         
         limpiarFormularioVenta();
     
     }//GEN-LAST:event_btnCancelar2ActionPerformed
+//---------GENERA LA BOLETAA------------
+    private void btnGenerarBoletaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarBoletaActionPerformed
+         try {
+        int idVenta = Integer.parseInt(txtIdVenta.getText()); // Asegúrate de que este campo tenga el ID correcto
 
+        VentaDAO vdao = new VentaDAO();
+        Venta venta = vdao.buscarPorId(idVenta); // ✅ Este método debe existir
+        List<DetalleVenta> detalles = vdao.obtenerDetallesVenta(idVenta); // ✅ También debe existir
+
+        if (venta != null && detalles != null && !detalles.isEmpty()) {
+            String ruta = "Boletas/Boleta_" + idVenta + ".pdf"; // ✅ Ruta relativa o ajusta la ruta completa si deseas
+
+            GenerarBoletaPDF.generarBoleta(venta, detalles, ruta); // ✅ Llama al método con los 3 parámetros
+            JOptionPane.showMessageDialog(null, "Boleta generada en: " + ruta);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontró información de la venta para generar la boleta.");
+        }
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "ID de venta inválido.");
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(null, "Error al generar la boleta: " + ex.getMessage());
+    }
+         
+    }//GEN-LAST:event_btnGenerarBoletaActionPerformed
+
+    
     public void calcularTotal() {
     double total = 0;
     for (int i = 0; i < tblDetalleVenta.getRowCount(); i++) {
@@ -1741,7 +1821,7 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
 
 
     public void limpiarFormularioVenta() {
-    txtIdVenta.setText("");
+    //txtIdVenta.setText("");
     txtCodCliente.setText("");
     txtCliente.setText("");
     txtCodProducto.setText("");
@@ -1757,24 +1837,31 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
 }
 
     
-    private void listarProductos() {
+    public void listarProductos() {
+    DefaultTableModel modelo = (DefaultTableModel) tblProductos.getModel();
+    modelo.setRowCount(0); // Limpia la tabla
+
     ProductoDAO dao = new ProductoDAO();
     List<Producto> lista = dao.listar();
 
-    modeloProducto = (DefaultTableModel) tblProductos.getModel();
-    modeloProducto.setRowCount(0); // Limpiar tabla
-
     for (Producto p : lista) {
-        modeloProducto.addRow(new Object[]{
-            p.getCodigo(),
-            p.getDescripcion(),
-            p.getPrecio(),
-            p.getCategoria(),
-            p.getStock(),
-            p.getFechaVencimiento()
-        });
+        Object[] fila = new Object[7];
+        fila[0] = p.getCodigo(); // Mostrar el código como identificador visible
+        fila[1] = p.getDescripcion();
+        fila[2] = p.getPrecio();
+        fila[3] = p.getCategoria();
+        fila[4] = p.getStock();
+        fila[5] = p.getFechaVencimiento(); // Aquí se incluye la fecha
+        fila[6] = p.getId_producto(); // Internamente, no visible si no lo deseas mostrar
+        modelo.addRow(fila);
     }
+
+    // Ocultar la columna 0 (id_producto)
+    tblProductos.getColumnModel().getColumn(6).setMinWidth(0);
+    tblProductos.getColumnModel().getColumn(6).setMaxWidth(0);
+    tblProductos.getColumnModel().getColumn(6).setPreferredWidth(0);
 }
+
 
 
     
@@ -1910,6 +1997,7 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
     private javax.swing.JButton btnEliminar3;
     private javax.swing.JButton btnEliminar4;
     private javax.swing.JButton btnEmpleado;
+    private javax.swing.JButton btnGenerarBoleta;
     private javax.swing.JButton btnGenerarVenta;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnLimpiar2;

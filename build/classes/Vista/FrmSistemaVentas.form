@@ -1334,17 +1334,23 @@
                 <Component class="javax.swing.JTable" name="tblProductos">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="6" rowCount="4">
+                      <Table columnCount="7" rowCount="4">
                         <Column editable="true" title="Codigo Prod." type="java.lang.Object"/>
                         <Column editable="true" title="Descripcion" type="java.lang.Object"/>
                         <Column editable="true" title="Precio" type="java.lang.Object"/>
                         <Column editable="true" title="Categoria" type="java.lang.Object"/>
                         <Column editable="true" title="Stock" type="java.lang.Object"/>
                         <Column editable="true" title="FechaVencimiento" type="java.lang.Object"/>
+                        <Column editable="true" title="ID" type="java.lang.Object"/>
                       </Table>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0">
+                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                          <Title/>
+                          <Editor/>
+                          <Renderer/>
+                        </Column>
                         <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                           <Title/>
                           <Editor/>
@@ -1505,6 +1511,8 @@
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="32767" attributes="0"/>
+                      <Component id="btnGenerarBoleta" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="78" max="-2" attributes="0"/>
                       <Component id="btnGenerarVenta" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
                       <Component id="btnCancelar2" min="-2" pref="104" max="-2" attributes="0"/>
@@ -1559,6 +1567,7 @@
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="btnCancelar2" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="btnGenerarVenta" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnGenerarBoleta" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace pref="24" max="32767" attributes="0"/>
                           </Group>
@@ -1763,6 +1772,14 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnGenerarBoleta">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Boleta"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGenerarBoletaActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

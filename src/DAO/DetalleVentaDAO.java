@@ -104,6 +104,23 @@ public class DetalleVentaDAO {
 
         return false;
     }
+    public boolean registrarDetalleVenta(DetalleVenta d) {
+    String sql = "INSERT INTO DetalleVenta (id_venta, id_producto, cantidad, precioUnitario, importe) VALUES (?, ?, ?, ?, ?)";
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setInt(1, d.getId_venta());
+        ps.setInt(2, d.getId_producto());
+        ps.setInt(3, d.getCantidad());
+        ps.setDouble(4, d.getPrecioUnitario());
+        ps.setDouble(5, d.getImporte());
+        ps.executeUpdate();
+        return true;
+    } catch (SQLException e) {
+        System.err.println("Error al registrar detalle venta: " + e.getMessage());
+    }
+    return false;
 }
+    }
 
 

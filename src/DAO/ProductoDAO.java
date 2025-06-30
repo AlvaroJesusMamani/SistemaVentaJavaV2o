@@ -20,7 +20,7 @@ public class ProductoDAO {
     Conexion cn = new Conexion();
 
     
-    public Producto buscarPorCodigo(String codigo) {
+   public Producto buscarPorCodigo(String codigo) {
     Producto p = null;
     String sql = "SELECT * FROM Producto WHERE codigo = ?";
     
@@ -29,22 +29,29 @@ public class ProductoDAO {
         ps = con.prepareStatement(sql);
         ps.setString(1, codigo);
         rs = ps.executeQuery();
+
         if (rs.next()) {
             p = new Producto();
             p.setId_producto(rs.getInt("id_producto"));
-            p.setDescripcion(rs.getString("descripcion"));
+            p.setCodigo(rs.getString("codigo"));
+            p.setDescripcion(rs.getString("descripcion")); // 👈 clave
             p.setPrecio(rs.getDouble("precio"));
             p.setCategoria(rs.getString("categoria"));
+            p.setStock(rs.getInt("stock"));
             p.setFechaVencimiento(rs.getDate("fechaVencimiento"));
             p.setId_proveedor(rs.getInt("id_proveedor"));
-            p.setStock(rs.getInt("stock"));
-            p.setCodigo(rs.getString("codigo"));
         }
+
     } catch (SQLException e) {
         System.err.println("Error al buscar producto por código: " + e.getMessage());
     }
+
     return p;
 }
+
+
+
+    
     
     // Obtener el primer proveedor registrado
     public int obtenerPrimerIdProveedor() {
@@ -156,6 +163,33 @@ public class ProductoDAO {
         }
         return false;
     }
+    public Producto buscarPorId(int id) {
+    Producto p = new Producto();
+    String sql = "SELECT * FROM Producto WHERE id_producto = ?";
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setInt(1, id);
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            p.setId_producto(rs.getInt("id_producto"));
+            p.setDescripcion(rs.getString("descripcion"));
+            p.setPrecio(rs.getDouble("precio"));
+            p.setCategoria(rs.getString("categoria"));
+            p.setFechaVencimiento(rs.getDate("fechaVencimiento"));
+            p.setId_proveedor(rs.getInt("id_proveedor")); // ✅ importante
+            p.setStock(rs.getInt("stock"));
+            p.setCodigo(rs.getString("codigo"));
+        }
+    } catch (SQLException e) {
+        System.err.println("Error al buscar producto por ID: " + e.getMessage());
+    }
+    return p;
+    
+}
+    
+    
+
 }
 
 

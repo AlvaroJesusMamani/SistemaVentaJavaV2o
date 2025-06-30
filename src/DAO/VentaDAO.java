@@ -193,13 +193,13 @@ public int buscarIdProductoPorCodigo(String codigo) {
     
 public List<DetalleVenta> obtenerDetallesVenta(int idVenta) {
     List<DetalleVenta> lista = new ArrayList<>();
-    String sql = "SELECT * FROM DetalleVenta WHERE id_venta=?";
-
+    String sql = "SELECT * FROM DetalleVenta WHERE id_venta = ?";
     try {
         con = cn.getConnection();
         ps = con.prepareStatement(sql);
         ps.setInt(1, idVenta);
         rs = ps.executeQuery();
+        ProductoDAO pdao = new ProductoDAO();
 
         while (rs.next()) {
             DetalleVenta d = new DetalleVenta();
@@ -209,15 +209,19 @@ public List<DetalleVenta> obtenerDetallesVenta(int idVenta) {
             d.setCantidad(rs.getInt("cantidad"));
             d.setPrecioUnitario(rs.getDouble("precioUnitario"));
             d.setImporte(rs.getDouble("importe"));
+
+            // Aquí enlazas el producto completo
+            Producto producto = pdao.buscarPorId(d.getId_producto());
+            d.setProducto(producto); // ⬅️ esto era lo que faltaba
+
             lista.add(d);
         }
-
     } catch (SQLException e) {
         System.err.println("Error al obtener detalles de venta: " + e.getMessage());
     }
-
     return lista;
 }
+
 public List<DetalleVenta> listarDetalleVenta(int idVenta) {
     List<DetalleVenta> lista = new ArrayList<>();
     String sql = "SELECT dv.*, p.descripcion FROM DetalleVenta dv JOIN Producto p ON dv.id_producto = p.id_producto WHERE dv.id_venta = ?";

@@ -7,11 +7,15 @@ import DAO.ProductoDAO;
 import DAO.ProveedorDAO;
 import DAO.VentaDAO;
 import generaPDF.GenerarBoletaPDF;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import modelo.Cliente;
 import modelo.Empleado;
@@ -60,7 +64,7 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
         listarProductos();
         listarProductos();
         listarEmpleados();
-        
+        mostrarFechaYHoraSeparadas();
 
     } 
     @SuppressWarnings("unchecked")
@@ -204,6 +208,8 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
         btnGenerarBoleta = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         btnSalir = new javax.swing.JButton();
+        lblFecha = new javax.swing.JLabel();
+        lblHora = new javax.swing.JLabel();
 
         jLabel4.setText("jLabel4");
 
@@ -338,7 +344,7 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
                     .addComponent(btnLimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(27, 27, 27)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 646, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(241, Short.MAX_VALUE))
+                .addContainerGap(235, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -511,7 +517,7 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
                                 .addGap(56, 56, 56)
                                 .addComponent(txtMz)
                                 .addGap(54, 54, 54)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 306, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 300, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jdcFechaRegistro, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -699,7 +705,7 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(32, 32, 32)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1050, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap(76, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -855,7 +861,7 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jdcFechaVencimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 885, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(btnModificar4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1030,7 +1036,7 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
                                 .addComponent(jLabel49)
                                 .addGap(44, 44, 44)
                                 .addComponent(cbxMetodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(27, 27, 27)
                         .addComponent(jScrollPane5)
@@ -1109,7 +1115,7 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1164, Short.MAX_VALUE)
+            .addGap(0, 1158, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1124,6 +1130,14 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
                 btnSalirActionPerformed(evt);
             }
         });
+
+        lblFecha.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblFecha.setForeground(new java.awt.Color(102, 102, 255));
+        lblFecha.setText(".");
+
+        lblHora.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblHora.setForeground(new java.awt.Color(102, 102, 255));
+        lblHora.setText(".");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1144,22 +1158,30 @@ public class FrmSistemaVentas extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(41, 41, 41)
                         .addComponent(btnSalir)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jTabbedPane1)
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(536, 536, 536)
                 .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblHora, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(53, 53, 53))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lblFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblHora)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29))
+                .addGap(26, 26, 26))
             .addGroup(layout.createSequentialGroup()
                 .addGap(133, 133, 133)
                 .addComponent(btnClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1704,20 +1726,16 @@ if (filaSeleccionadaProducto != -1) {
     private void btnGenerarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarVentaActionPerformed
             Venta v = new Venta();
     VentaDAO vdao = new VentaDAO();
-    ProductoDAO pdao = new ProductoDAO();
 
     v.setId_cliente(Integer.parseInt(txtCodCliente.getText()));
     v.setMetodoPago(cbxMetodoPago.getSelectedItem().toString());
     v.setFechaVenta(new java.sql.Date(System.currentTimeMillis()));
-    v.setId_empleado(1); // empleado fijo o actual si lo tienes
+    v.setId_empleado(1); // Puedes cambiarlo por el empleado actual si lo manejas
 
     int idVenta = vdao.registrarVenta(v);
-    
 
     if (idVenta != -1) {
-        txtIdVenta.setText(String.valueOf(idVenta));
-
-        List<DetalleVenta> listaDetalleVenta = new ArrayList<>();
+        txtIdVenta.setText(String.valueOf(idVenta)); // Mostrar el ID generado
 
         for (int i = 0; i < tblDetalleVenta.getRowCount(); i++) {
             DetalleVenta d = new DetalleVenta();
@@ -1730,27 +1748,11 @@ if (filaSeleccionadaProducto != -1) {
             d.setPrecioUnitario(Double.parseDouble(tblDetalleVenta.getValueAt(i, 5).toString()));
             d.setImporte(Double.parseDouble(tblDetalleVenta.getValueAt(i, 6).toString()));
 
-            // Asociar el producto para el PDF
-            Producto producto = pdao.buscarPorCodigo(codigo);
-            d.setProducto(producto);
-
             vdao.registrarDetalleVenta(d);
-            listaDetalleVenta.add(d);
-        }
-
-        // Generar PDF
-        try {
-            String ruta = "C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/Boletas/Boleta_" + idVenta + ".pdf";
-            new File("C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/Boletas").mkdirs();
-
-            Venta ventaCompleta = vdao.buscarPorId(idVenta); // asegúrate de tener este método
-            GenerarBoletaPDF.generarBoleta(ventaCompleta, listaDetalleVenta, ruta);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al generar boleta PDF: " + e.getMessage());
         }
 
         JOptionPane.showMessageDialog(null, "Venta registrada con éxito");
-        limpiarFormularioVenta();
+        limpiarFormularioVenta(); // Este método debe dejar txtIdVenta intacto si quieres que se mantenga visible
     } else {
         JOptionPane.showMessageDialog(null, "Error al registrar venta");
     }
@@ -1765,21 +1767,30 @@ if (filaSeleccionadaProducto != -1) {
 //---------GENERA LA BOLETAA------------
     private void btnGenerarBoletaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarBoletaActionPerformed
          try {
-        int idVenta = Integer.parseInt(txtIdVenta.getText()); // Asegúrate de que este campo tenga el ID correcto
+        int idVenta = Integer.parseInt(txtIdVenta.getText());
 
         VentaDAO vdao = new VentaDAO();
-        Venta venta = vdao.buscarPorId(idVenta); // ✅ Este método debe existir
-        List<DetalleVenta> detalles = vdao.obtenerDetallesVenta(idVenta); // ✅ También debe existir
+        ProductoDAO pdao = new ProductoDAO();
 
-        if (venta != null && detalles != null && !detalles.isEmpty()) {
-            String ruta = "Boletas/Boleta_" + idVenta + ".pdf"; // ✅ Ruta relativa o ajusta la ruta completa si deseas
+        Venta v = vdao.buscarPorId(idVenta);
+        List<DetalleVenta> detalles = vdao.obtenerDetallesVenta(idVenta);
 
-            GenerarBoletaPDF.generarBoleta(venta, detalles, ruta); // ✅ Llama al método con los 3 parámetros
-            JOptionPane.showMessageDialog(null, "Boleta generada en: " + ruta);
-        } else {
-            JOptionPane.showMessageDialog(null, "No se encontró información de la venta para generar la boleta.");
+        // 🔁 Asignar el producto completo con descripción a cada detalle
+        for (DetalleVenta d : detalles) {
+            Producto producto = pdao.buscarPorId(d.getId_producto());
+            d.setProducto(producto);
         }
 
+        if (v != null && detalles != null && !detalles.isEmpty()) {
+            String ruta = "C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/Boletas/Boleta_" + idVenta + ".pdf";
+            new File("C:/Users/PC/Documents/NetBeansProjects/SSistemaVentas/Boletas").mkdirs();
+
+            GenerarBoletaPDF.generarBoleta(v, detalles, ruta);
+
+            JOptionPane.showMessageDialog(null, "Boleta generada exitosamente:\n" + ruta);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontró información para generar la boleta.");
+        }
     } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(null, "ID de venta inválido.");
     } catch (Exception ex) {
@@ -1818,6 +1829,25 @@ if (filaSeleccionadaProducto != -1) {
     filaSeleccionadaProducto = -1;
     tblProductos.clearSelection();
 }
+    //--FECHAAAAAAAAAA
+    private void mostrarFechaYHoraSeparadas() {
+    Timer timer = new Timer(1000, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Date ahora = new Date();
+
+            // Formatos separados
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
+
+            lblFecha.setText("Fecha: " + formatoFecha.format(ahora));
+            lblHora.setText("Hora: " + formatoHora.format(ahora));
+        }
+    });
+    timer.start();
+}
+
+
 
 
     public void limpiarFormularioVenta() {
@@ -2075,6 +2105,8 @@ if (filaSeleccionadaProducto != -1) {
     private javax.swing.JTabbedPane jTabbedPane1;
     private com.toedter.calendar.JDateChooser jdcFechaRegistro;
     private com.toedter.calendar.JDateChooser jdcFechaVencimiento;
+    private javax.swing.JLabel lblFecha;
+    private javax.swing.JLabel lblHora;
     private javax.swing.JSpinner spinnerCantidadVenta;
     private javax.swing.JTable tablaEmpleado;
     private javax.swing.JTable tablaProveedor;

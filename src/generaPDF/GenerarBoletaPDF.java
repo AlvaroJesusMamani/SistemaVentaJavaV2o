@@ -7,10 +7,13 @@ package generaPDF;
  *
  * @author Alvaro Jesus Cahuapaza
  */
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import modelo.DetalleVenta;
@@ -28,7 +31,7 @@ public class GenerarBoletaPDF {
             PdfWriter.getInstance(documento, new FileOutputStream(ruta));
             documento.open();
 
-            // Encabezado de la boleta
+            // Encabezado
             documento.add(new Paragraph("BOLETA DE VENTA", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18)));
             documento.add(new Paragraph("ID Venta: " + venta.getId_venta()));
             documento.add(new Paragraph("Fecha: " + venta.getFechaVenta()));
@@ -37,16 +40,22 @@ public class GenerarBoletaPDF {
             documento.add(new Paragraph("ID Empleado: " + venta.getId_empleado()));
             documento.add(new Paragraph(" "));
 
-            // Tabla con los productos vendidos
+            // Tabla de detalles
             PdfPTable tabla = new PdfPTable(4);
+            tabla.setWidthPercentage(100); // Ajuste ancho
+            tabla.setSpacingBefore(10f);
+            tabla.setSpacingAfter(10f);
+
+            // Encabezados
             tabla.addCell("Producto");
             tabla.addCell("Cantidad");
             tabla.addCell("Precio Unitario");
             tabla.addCell("Importe");
 
+            double total = 0;
+
             for (DetalleVenta d : detalles) {
                 Producto p = d.getProducto();
-
                 String nombreProducto = (p != null && p.getDescripcion() != null)
                         ? p.getDescripcion()
                         : "Producto desconocido";
@@ -55,7 +64,21 @@ public class GenerarBoletaPDF {
                 tabla.addCell(String.valueOf(d.getCantidad()));
                 tabla.addCell(String.format("%.2f", d.getPrecioUnitario()));
                 tabla.addCell(String.format("%.2f", d.getImporte()));
+
+                total += d.getImporte();
             }
+
+            // 🔲 Fila de TOTAL en recuadro
+            PdfPCell celdaTotalLabel = new PdfPCell(new Phrase("TOTAL VENTA:"));
+            celdaTotalLabel.setColspan(3);
+            celdaTotalLabel.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            celdaTotalLabel.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            tabla.addCell(celdaTotalLabel);
+
+            PdfPCell celdaTotalValor = new PdfPCell(new Phrase("S/. " + String.format("%.2f", total)));
+            celdaTotalValor.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            celdaTotalValor.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            tabla.addCell(celdaTotalValor);
 
             documento.add(tabla);
             documento.close();

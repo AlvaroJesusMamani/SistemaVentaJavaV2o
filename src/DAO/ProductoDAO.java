@@ -188,6 +188,24 @@ public class ProductoDAO {
     return p;
     
 }
+    public String generarCodigoProducto() {
+    String sql = "SELECT TOP 1 codigo FROM Producto ORDER BY id_producto DESC";
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            String ultimoCodigo = rs.getString("codigo"); // ej: P021
+            int num = Integer.parseInt(ultimoCodigo.substring(1)); // quitar 'P'
+            num++;
+            return String.format("P%03d", num); // → P022
+        }
+    } catch (SQLException e) {
+        System.err.println("Error al generar código: " + e.getMessage());
+    }
+    return "P001"; // si no hay productos
+}
+
     
     
 
